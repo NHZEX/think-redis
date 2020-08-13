@@ -4,7 +4,10 @@ declare(strict_types=1);
 namespace Zxin\Tests\Model;
 
 use PHPUnit\Framework\TestCase;
+use Zxin\Redis\Model\TypeTransformManage;
+use Zxin\Tests\Data\MsgpackType;
 use Zxin\Tests\Data\RedisModelA;
+use Zxin\Tests\Data\RedisModelB;
 use Zxin\Think\Redis\RedisManager;
 
 class RedisModelTest extends TestCase
@@ -61,5 +64,20 @@ class RedisModelTest extends TestCase
         $model->load();
         $this->assertTrue($model->isEmpty());
         $this->assertTrue($redis->exists($key) === 0);
+    }
+
+    public function testTypeTransform()
+    {
+        $key = 'test:' . __METHOD__;
+
+        TypeTransformManage::add(new MsgpackType());
+
+        $data = [0, 1, 2, 8, 'd' => 4, 5, 6, 7, 8];
+
+        $redis = RedisManager::connection();
+        $model = new RedisModelB($key, $redis);
+        $model->arrVal = $data;
+
+        $this->assertEquals($data, $model->arrVal);
     }
 }
