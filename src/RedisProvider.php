@@ -3,13 +3,12 @@
 namespace Zxin\Redis;
 
 use InvalidArgumentException;
-use Zxin\Redis\Connections\PhpRedisConnection;
 use think\Config;
+use Zxin\Redis\Connections\PhpRedisConnection;
 
 /**
- * Class RedisProxy
- * @package app\server
- * @mixin PhpRedisConnection
+ * Class RedisProvider
+ * @package Zxin\Redis
  */
 class RedisProvider
 {
@@ -54,15 +53,5 @@ class RedisProvider
         }
 
         unset($this->connections[$default]);
-    }
-
-    /**
-     * @param $name
-     * @param $arguments
-     * @return mixed
-     */
-    public function __call($name, $arguments)
-    {
-        return $this->connection()->command($name, $arguments);
     }
 }

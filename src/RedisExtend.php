@@ -51,5 +51,4 @@ class RedisExtend extends Redis
         }
         throw new Error(sprintf('Call to undefined method %s::%s()', static::class, $name));
     }
-
 }
