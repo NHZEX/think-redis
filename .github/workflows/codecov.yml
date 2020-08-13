@@ -1,0 +1,56 @@
+name: codecov
+
+on: [push]
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - 7.4
+    services:
+      redis:
+        image: redis:6
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: openssl, posix #optional, setup extensions
+          coverage: pcov #optional, setup coverage driver
+
+      - name: Check Version
+        run: |
+          php -v
+          php -m
+          composer -V
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Install dependencies (composer.lock)
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Run test suite
+        run: composer exec -- phpunit --coverage-clover=coverage.xml -v
+
+      - name: Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} #required
+          file: ./coverage.xml #optional
+          flags: unittests #optional
+          name: codecov-umbrella #optional
