@@ -6,15 +6,19 @@ namespace Zxin\Redis;
 use OutOfBoundsException;
 use Redis;
 use Zxin\Redis\Connections\PhpRedisConnection;
+use Zxin\Redis\Model\LuaVerifyIntegrity;
 use Zxin\Redis\Model\TypeTransformManage;
 use function array_keys;
+use function asort;
+use function join;
 use function json_decode;
 use function json_encode;
-use function md5;
 use function serialize;
 
 class RedisModel
 {
+    protected const KEY_INTEGRITY = '__integrity';
+
     /**
      * @var PhpRedisConnection
      */
@@ -59,6 +63,11 @@ class RedisModel
     /** @var int */
     protected $defaultTTL = 180;
 
+    /** @var bool 一致性 */
+    protected $flagConcurrency = false;
+    /** @var bool 完整性 */
+    protected $flagIntegrity = false;
+
     /** @var bool */
     private $lazy;
     /** @var bool */
@@ -73,17 +82,17 @@ class RedisModel
         $this->redis = $redis;
     }
 
-    protected function buildIntegrityHash(): string
-    {
-        return md5(serialize($this->type));
-    }
-
     public function load()
     {
         if ($this->lazy) {
             $this->exist = $this->isExist();
             return;
         }
+
+        if (!(new LuaVerifyIntegrity())->eval($this->redis, $this->table)) {
+            return;
+        }
+
         $data = $this->redis->hGetAll($this->table);
         if (!empty($data)) {
             $this->origin = $data;
@@ -106,13 +115,38 @@ class RedisModel
                 $m->hSet($this->table, $key, $datum);
             }
             $m->exec();
+            // 惰性 Integrity
         } else {
-            $this->redis->hMSet($this->table, $this->data);
+            $data = $this->data;
+            if ($this->flagIntegrity) {
+                $data[self::KEY_INTEGRITY] = $this::calcFullSignature($data);
+            }
+            $this->redis->hMSet($this->table, $data);
         }
         if ($ttl || $this->defaultTTL) {
             $this->refreshTTL($ttl ?? $this->defaultTTL);
         }
         $this->origin = $this->data;
+    }
+
+    /**
+     * @param array $data
+     * @return string
+     */
+    protected static function calcFullSignature(array $data): string
+    {
+        $keys = array_keys($data);
+        asort($keys, SORT_STRING);
+        return sha1(join('.', $keys));
+    }
+
+    /**
+     * todo
+     * @return string
+     */
+    protected function buildConcurrencyHash(): string
+    {
+        return sha1(serialize($this->type));
     }
 
     public function refreshTTL(int $ttl)

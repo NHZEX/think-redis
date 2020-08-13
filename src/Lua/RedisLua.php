@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Zxin\Redis\Lua;
 
 use InvalidArgumentException;
-use RuntimeException;
 use Zxin\Redis\Connections\PhpRedisConnection;
+use Zxin\Redis\Exception\RedisLuaException;
 use function array_merge;
 use function is_string;
 use function sha1;
@@ -57,7 +57,12 @@ abstract class RedisLua
     public function load(PhpRedisConnection $redis): bool
     {
         if (!$this->loaded($redis)) {
-            return $this->getSha1() === $redis->script('load', $this->luaCode());
+            $redis->clearLastError();
+            $result = $redis->script('load', $this->luaCode());
+            if (false === $result) {
+                throw new RedisLuaException($redis->getLastError());
+            }
+            return $this->getSha1() === $result;
         }
         return true;
     }
@@ -83,7 +88,7 @@ abstract class RedisLua
         );
 
         if ($retry >= 2) {
-            throw new RuntimeException($redis->getLastError());
+            throw new RedisLuaException($redis->getLastError());
         }
 
         return $result;

@@ -16,6 +16,8 @@ use Zxin\Redis\RedisModel;
  */
 class RedisModelA extends RedisModel
 {
+    protected $flagIntegrity = true;
+
     protected $type = [
         'intVal'   => 'int',
         'floatVal' => 'float',
