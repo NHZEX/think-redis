@@ -1,6 +1,6 @@
 {
-    "name": "zxin/utils",
-    "description": "util tools",
+    "name": "zxin/think-redis",
+    "description": "think redis",
     "type": "library",
     "license": "Apache-2.0",
     "authors": [
