@@ -30,6 +30,8 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: openssl, posix #optional, setup extensions
+          # coverage: xdebug #optional, setup coverage driver
+          ini-values: pcov.directory=., pcov.exclude="~vendor~"
           coverage: pcov #optional, setup coverage driver
 
       - name: Check Version
