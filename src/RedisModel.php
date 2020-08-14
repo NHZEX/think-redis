@@ -6,9 +6,9 @@ namespace Zxin\Redis;
 use OutOfBoundsException;
 use Zxin\Redis\Connections\PhpRedisConnection;
 use Zxin\Redis\Exception\RedisModelException;
+use Zxin\Redis\Model\LuaHashModelCheck;
 use Zxin\Redis\Model\LuaHMSetIntegrity;
 use Zxin\Redis\Model\LuaSumIntegrity;
-use Zxin\Redis\Model\LuaVerifyIntegrity;
 use Zxin\Redis\Model\TypeTransformManage;
 use function array_keys;
 use function json_decode;
@@ -65,16 +65,14 @@ class RedisModel
     protected $defaultTTL = 180;
 
     /** @var bool 一致性 */
-    protected $flagConcurrency = false;
+    protected $metadataCheck = false;
     /** @var bool 完整性 */
-    protected $flagIntegrity = false;
+    protected $integrityCheck = false;
 
     /** @var bool */
     private $lazy;
     /** @var bool */
     private $exist = false;
-    /** @var bool */
-    private $valid = false;
     /** @var int */
     private $unsafeOperationCount = 0;
 
@@ -87,7 +85,11 @@ class RedisModel
 
     public function load()
     {
-        if (!LuaVerifyIntegrity::eval($this->redis, $this->table)) {
+        if (!LuaHashModelCheck::eval(
+            $this->redis,
+            $this->table,
+            $this->metadataCheck ? $this->makeMetadataHash() : null
+        )) {
             return;
         }
 
@@ -113,6 +115,15 @@ class RedisModel
     public function save(int $ttl = 0)
     {
         $ttl = max($ttl ?: $this->defaultTTL, 0);
+        if ($this->metadataCheck
+            && (
+                count($this->data) > 0
+                || $this->getData('__metaCheck') !== ($hash = $this->makeMetadataHash()
+                )
+            )
+        ) {
+            $this->data['__metaCheck'] = $hash ?? $this->makeMetadataHash();
+        }
         if (LuaHMSetIntegrity::eval($this->redis, $this->table, $this->data, $this->lazy, $ttl)) {
             $this->origin = $this->data;
             return true;
@@ -127,10 +138,9 @@ class RedisModel
     }
 
     /**
-     * todo
      * @return string
      */
-    protected function buildConcurrencyHash(): string
+    protected function makeMetadataHash(): string
     {
         return sha1(serialize($this->type));
     }

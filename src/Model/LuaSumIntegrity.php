@@ -34,7 +34,7 @@ end
 
 local keys = redis.call('hKeys', hashKey)
 for k, v in pairs(keys) do
-  if v == '__integrity' then
+  if v == '__integrity' or v == '__metaCheck' then
     table.remove(keys, k)
   end
 end

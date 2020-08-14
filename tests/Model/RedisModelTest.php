@@ -8,6 +8,7 @@ use Zxin\Redis\Exception\RedisModelException;
 use Zxin\Redis\Model\TypeTransformManage;
 use Zxin\Tests\Data\MsgpackType;
 use Zxin\Tests\Data\RedisModelA;
+use Zxin\Tests\Data\RedisModelACopy;
 use Zxin\Tests\Data\RedisModelB;
 use Zxin\Think\Redis\RedisManager;
 
@@ -171,6 +172,8 @@ class RedisModelTest extends TestCase
         $model->load();
         $this->assertFalse($model->isEmpty());
         $this->assertTrue($redis->exists($key) > 0);
+
+        $model->destroy();
     }
 
     public function testIntegrityLazy3()
@@ -210,6 +213,35 @@ class RedisModelTest extends TestCase
         $this->assertTrue($model->isEmpty());
 
         unset($modelErr);
+    }
+
+    public function testModelMetadataCheck()
+    {
+        $key = 'test:' . __METHOD__;
+
+        $redis = RedisManager::connection();
+        $model = new RedisModelA($key, $redis, true);
+        $model->intVal = 123456;
+        $model->floatVal = 1.123456789;
+        $model->trueVal = true;
+        $model->falseVal = false;
+        $model->strVal = 'qwe,asd,zxc';
+        $model->arrVal = [1, 2, 3, 4, 5];
+        $this->assertTrue($model->save());
+
+        $this->assertTrue($redis->exists($key) > 0);
+
+        $model = new RedisModelA($key, $redis, true);
+        $model->load();
+        $this->assertFalse($model->isEmpty());
+
+        $this->assertTrue($redis->exists($key) > 0);
+
+        $model = new RedisModelACopy($key, $redis, true);
+        $model->load();
+        $this->assertTrue($model->isEmpty());
+
+        $this->assertTrue($redis->exists($key) === 0);
     }
 
     public function testTypeTransform()

@@ -29,5 +29,6 @@ class ThinkCacheTest extends TestCase
 
         $this->assertEquals(1, $cache->inc($key));
         $this->assertEquals(0, $cache->dec($key));
+        $this->assertTrue($cache->delete($key));
     }
 }

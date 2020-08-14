@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Zxin\Tests\Data;
 
-use Zxin\Redis\RedisModel;
-
 /**
  * Class RedisModelA
  * @package Zxin\Tests\Data
@@ -14,7 +12,7 @@ use Zxin\Redis\RedisModel;
  * @property string $strVal
  * @property array  $arrVal
  */
-class RedisModelB extends RedisModel
+class RedisModelACopy extends RedisModelA
 {
     protected $integrityCheck = true;
     protected $metadataCheck = true;
@@ -22,8 +20,9 @@ class RedisModelB extends RedisModel
     protected $type = [
         'intVal'   => 'int',
         'floatVal' => 'float',
-        'boolVal'  => 'bool',
-        'strVal'   => 'string',
-        'arrVal'   => 'msgpack',
+        'trueVal'  => 'bool',
+        'falseVal'  => 'bool',
+        'strVal'   => 'int', // 被修改
+        'arrVal'   => 'json',
     ];
 }
