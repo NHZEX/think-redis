@@ -10,7 +10,8 @@ use Zxin\Redis\RedisModel;
  * @package Zxin\Tests\Data
  * @property int    $intVal
  * @property float  $floatVal
- * @property bool   $boolVal
+ * @property bool   $trueVal
+ * @property bool   $falseVal
  * @property string $strVal
  * @property array  $arrVal
  */
@@ -21,7 +22,8 @@ class RedisModelA extends RedisModel
     protected $type = [
         'intVal'   => 'int',
         'floatVal' => 'float',
-        'boolVal'  => 'bool',
+        'trueVal'  => 'bool',
+        'falseVal'  => 'bool',
         'strVal'   => 'string',
         'arrVal'   => 'json',
     ];

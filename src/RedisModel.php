@@ -4,15 +4,16 @@ declare(strict_types=1);
 namespace Zxin\Redis;
 
 use OutOfBoundsException;
-use Redis;
 use Zxin\Redis\Connections\PhpRedisConnection;
+use Zxin\Redis\Exception\RedisModelException;
+use Zxin\Redis\Model\LuaHMSetIntegrity;
+use Zxin\Redis\Model\LuaSumIntegrity;
 use Zxin\Redis\Model\LuaVerifyIntegrity;
 use Zxin\Redis\Model\TypeTransformManage;
 use function array_keys;
-use function asort;
-use function join;
 use function json_decode;
 use function json_encode;
+use function max;
 use function serialize;
 
 class RedisModel
@@ -74,6 +75,8 @@ class RedisModel
     private $exist = false;
     /** @var bool */
     private $valid = false;
+    /** @var int */
+    private $unsafeOperationCount = 0;
 
     public function __construct(string $name, PhpRedisConnection $redis, bool $lazy = false)
     {
@@ -84,12 +87,12 @@ class RedisModel
 
     public function load()
     {
-        if ($this->lazy) {
-            $this->exist = $this->isExist();
+        if (!LuaVerifyIntegrity::eval($this->redis, $this->table)) {
             return;
         }
 
-        if (!(new LuaVerifyIntegrity())->eval($this->redis, $this->table)) {
+        if ($this->lazy) {
+            $this->exist = true;
             return;
         }
 
@@ -107,37 +110,20 @@ class RedisModel
         }
     }
 
-    public function save(?int $ttl = null)
+    public function save(int $ttl = 0)
     {
-        if ($this->lazy && $this->isExist()) {
-            $m = $this->redis->multi(Redis::PIPELINE);
-            foreach ($this->data as $key => $datum) {
-                $m->hSet($this->table, $key, $datum);
-            }
-            $m->exec();
-            // 惰性 Integrity
-        } else {
-            $data = $this->data;
-            if ($this->flagIntegrity) {
-                $data[self::KEY_INTEGRITY] = $this::calcFullSignature($data);
-            }
-            $this->redis->hMSet($this->table, $data);
-        }
-        if ($ttl || $this->defaultTTL) {
-            $this->refreshTTL($ttl ?? $this->defaultTTL);
-        }
-        $this->origin = $this->data;
+        $ttl = max($ttl ?: $this->defaultTTL, 0);
+        if (LuaHMSetIntegrity::eval($this->redis, $this->table, $this->data, $this->lazy, $ttl)) {
+            $this->origin = $this->data;
+            return true;
+        };
+        return false;
     }
 
-    /**
-     * @param array $data
-     * @return string
-     */
-    protected static function calcFullSignature(array $data): string
+    public function computingIntegrity(): bool
     {
-        $keys = array_keys($data);
-        asort($keys, SORT_STRING);
-        return sha1(join('.', $keys));
+        $this->unsafeOperationCount = 0;
+        return LuaSumIntegrity::eval($this->redis, $this->table);
     }
 
     /**
@@ -296,7 +282,15 @@ class RedisModel
         unset($this->data[$name]);
 
         if ($this->lazy) {
+            $this->unsafeOperationCount++;
             $this->redis->hDel($this->table, $name);
+        }
+    }
+
+    public function __destruct()
+    {
+        if ($this->unsafeOperationCount > 0) {
+            throw new RedisModelException("There are unsaved operations ({$this->table})");
         }
     }
 }

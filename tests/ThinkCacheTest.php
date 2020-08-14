@@ -20,9 +20,14 @@ class ThinkCacheTest extends TestCase
         $value = 'qwertyuiop';
         $cache->set($key, $value);
 
+        $this->assertTrue($cache->has($key));
+
         $this->assertEquals(serialize($value), $redis->get($key));
 
         $this->assertEquals($value, $cache->get($key));
         $this->assertTrue($cache->delete($key));
+
+        $this->assertEquals(1, $cache->inc($key));
+        $this->assertEquals(0, $cache->dec($key));
     }
 }

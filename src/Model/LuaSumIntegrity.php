@@ -6,7 +6,7 @@ namespace Zxin\Redis\Model;
 use Zxin\Redis\Connections\PhpRedisConnection;
 use Zxin\Redis\Lua\RedisLua;
 
-class LuaVerifyIntegrity extends RedisLua
+class LuaSumIntegrity extends RedisLua
 {
     public static function eval(PhpRedisConnection $redis, string $key): bool
     {
@@ -20,15 +20,15 @@ class LuaVerifyIntegrity extends RedisLua
 
     protected function luaCode(): string
     {
-        return <<<'LUA'
+        /**
+         * $keys = array_keys($data);
+         * asort($keys, SORT_STRING);
+         * return sha1(join('.', $keys));
+         */
+        return <<<LUA
 local hashKey = KEYS[1]
 
 if redis.call('EXISTS', hashKey) == 0 then
-  return false
-end
-
-local integrity = redis.call('hGet', hashKey, '__integrity')
-if integrity == false then
   return false
 end
 
@@ -41,11 +41,7 @@ end
 table.sort(keys)
 local keysStr = table.concat(keys, '.')
 
-if redis.sha1hex(keysStr) ~= integrity then
-  redis.call('del', hashKey)
-  return false
-end
-
+redis.call('hSet', hashKey, '__integrity', redis.sha1hex(keysStr))
 return true
 LUA;
     }

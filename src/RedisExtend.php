@@ -33,10 +33,13 @@ class RedisExtend extends Redis
         Redis::REDIS_STREAM => 'stream'
     ];
 
-    public function getServerVersion() :string
+    public function getServerVersion():? string
     {
         /** @var array $redis_info */
         $redis_info = $this->info('SERVER');
+        if (empty($redis_info)) {
+            return null;
+        }
         return $redis_info['redis_version'];
     }
 

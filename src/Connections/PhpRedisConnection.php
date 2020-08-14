@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace Zxin\Redis\Connections;
 
-use Zxin\Redis\RedisExtend;
 use Redis;
 use RedisException;
-use RuntimeException;
+use Zxin\Redis\RedisExtend;
 use function array_merge;
 
 /**
@@ -89,7 +88,7 @@ class PhpRedisConnection
                 $client->setOption(Redis::OPT_READ_TIMEOUT, $config['read_timeout']);
             }
         } catch (RedisException $exception) {
-            throw new RuntimeException(
+            throw new \Zxin\Redis\Exception\RedisException(
                 $exception->getMessage() . ', ' . $client->getLastError(),
                 $exception->getCode(),
                 $exception
