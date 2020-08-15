@@ -85,7 +85,7 @@ class RedisModel
 
     public function load()
     {
-        if (!LuaHashModelCheck::eval(
+        if ($this->integrityCheck && !LuaHashModelCheck::eval(
             $this->redis,
             $this->table,
             $this->metadataCheck ? $this->makeMetadataHash() : null
@@ -94,7 +94,7 @@ class RedisModel
         }
 
         if ($this->lazy) {
-            $this->exist = true;
+            $this->exist = $this->integrityCheck ?: $this->isExist();
             return;
         }
 
