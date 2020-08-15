@@ -42,7 +42,7 @@
                 "Zxin\\Think\\Redis\\Service"
             ],
             "config": {
-                "phinx": "config/redis.php"
+                "redis": "config/redis.php"
             }
         }
     },
