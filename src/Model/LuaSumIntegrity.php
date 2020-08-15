@@ -33,9 +33,9 @@ if redis.call('EXISTS', hashKey) == 0 then
 end
 
 local keys = redis.call('hKeys', hashKey)
-for k, v in pairs(keys) do
-  if v == '__integrity' or v == '__metaCheck' then
-    table.remove(keys, k)
+for i=table.getn(keys),1,-1 do
+  if keys[i] == '__integrity' or keys[i] == '__metaCheck' then
+    table.remove(keys, i)
   end
 end
 table.sort(keys)

@@ -231,9 +231,13 @@ class RedisModelTest extends TestCase
 
         $this->assertTrue($redis->exists($key) > 0);
 
+        $redis->hSet($key, 'strVal', 'qwe,asd,???');
+
         $model = new RedisModelA($key, $redis, true);
         $model->load();
         $this->assertFalse($model->isEmpty());
+
+        $this->assertEquals('qwe,asd,???', $model->strVal);
 
         $this->assertTrue($redis->exists($key) > 0);
 

@@ -20,38 +20,44 @@ class LuaHashModelCheck extends RedisLua
 
     protected function luaCode(): string
     {
+        // 0: exists
+        // 1: success
+        // 2: {['err'] = 'metadata check fail'}
+        // 3: {['err'] = 'integrity does not exist'}
+        // 4: {['err'] = 'integrity check fail: ' .. sumHash}
         return <<<'LUA'
 local hashKey = KEYS[1]
 local metaHash = ARGV[1]
 
 if redis.call('EXISTS', hashKey) == 0 then
-  return false
+  return 0
 end
 
 if metaHash ~= '0' and redis.call('hGet', hashKey, '__metaCheck') ~= metaHash then
   redis.call('del', hashKey)
-  return false
+  return 2
 end
 local integrity = redis.call('hGet', hashKey, '__integrity')
 if integrity == false then
-  return false
+  return 3
 end
 
 local keys = redis.call('hKeys', hashKey)
-for k, v in pairs(keys) do
-  if v == '__integrity' or v == '__metaCheck' then
-    table.remove(keys, k)
+for i=table.getn(keys),1,-1 do
+  if keys[i] == '__integrity' or keys[i] == '__metaCheck' then
+    table.remove(keys, i)
   end
 end
 table.sort(keys)
 local keysStr = table.concat(keys, '.')
+local sumHash = redis.sha1hex(keysStr)
 
-if redis.sha1hex(keysStr) ~= integrity then
+if sumHash ~= integrity then
   redis.call('del', hashKey)
-  return false
+  return 4
 end
 
-return true
+return 1
 LUA;
     }
 }
