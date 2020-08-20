@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Zxin\Think\Redis\Pool;
 
 use Closure;
+use Redis;
 use RuntimeException;
 use Smf\ConnectionPool\ConnectionPool;
 use Swoole\Coroutine;
@@ -48,7 +49,7 @@ class RedisConnections extends PhpRedisConnection
         return 'connection.' . spl_object_id($this);
     }
 
-    protected function __getPoolConnection()
+    public function __borrow(): Redis
     {
         return Context::rememberData($this->__poolName(), function () {
             $connection = $this->pool->borrow();
@@ -56,18 +57,22 @@ class RedisConnections extends PhpRedisConnection
             $connection->{static::KEY_RELEASED} = false;
 
             Coroutine::defer(function () use ($connection) {
-                //自动归还
-                $connection->{static::KEY_RELEASED} = true;
-                $this->pool->return($connection);
+                $this->__return($connection);
             });
 
             return $connection;
         });
     }
 
+    public function __return(Redis $connection)
+    {
+        $connection->{static::KEY_RELEASED} = true;
+        $this->pool->return($connection);
+    }
+
     protected function __invokePool($method, array $arguments = [])
     {
-        $connection = $this->__getPoolConnection();
+        $connection = $this->__borrow();
         if ($connection->{static::KEY_RELEASED}) {
             throw new RuntimeException("Connection already has been released!");
         }
