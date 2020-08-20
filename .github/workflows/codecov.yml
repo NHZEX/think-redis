@@ -9,8 +9,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php:
+        php-versions:
           - 7.4
+    env:
+      extensions: openssl, swoole, posix
+      key: cache-v1 # can be any string, change to clear the extension cache.
     services:
       redis:
         image: redis:6
@@ -26,12 +29,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup cache environment
+        id: extcache
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: ${{ env.extensions }}
+          key: ${{ env.key }}
+
+      - name: Cache extensions
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.extcache.outputs.dir }}
+          key: ${{ steps.extcache.outputs.key }}
+          restore-keys: ${{ steps.extcache.outputs.key }}
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: ${{ matrix.php-versions }}
           tools: pecl
-          extensions: openssl, swoole, posix #optional, setup extensions
+          extensions: ${{ env.extensions }}
           # coverage: xdebug #optional, setup coverage driver
           ini-values: pcov.directory=., pcov.exclude="~vendor~"
           coverage: pcov #optional, setup coverage driver
