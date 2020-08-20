@@ -9,7 +9,6 @@ use RuntimeException;
 use Smf\ConnectionPool\ConnectionPool;
 use Swoole\Coroutine;
 use think\App;
-use think\swoole\coroutine\Context;
 use Zxin\Redis\Connections\PhpRedisConnection;
 use function class_exists;
 use function spl_object_id;
@@ -57,27 +56,49 @@ class RedisConnections extends PhpRedisConnection
             $connection->{static::KEY_RELEASED} = false;
 
             Coroutine::defer(function () use ($connection) {
-                $this->__return($connection);
+                $this->__return(true);
             });
 
             return $connection;
         });
     }
 
-    public function __return(Redis $connection)
+    public function __return(bool $all = false)
     {
-        $connection->{static::KEY_RELEASED} = true;
-        $this->pool->return($connection);
+        if ($all) {
+            foreach (Context::getDataObject()->getIterator() as $key => $connection) {
+                $connection->{static::KEY_RELEASED} = true;
+                Context::removeData($key);
+                $this->pool->return($connection);
+            }
+        } else {
+            $connection = Context::getData($this->__poolName());
+            if (empty($connection)) {
+                return;
+            }
+            if ($connection->{static::KEY_RELEASED}) {
+                return;
+            }
+            $connection->{static::KEY_RELEASED} = true;
+            Context::removeData($this->__poolName());
+            $this->pool->return($connection);
+        }
     }
 
-    protected function __invokePool($method, array $arguments = [])
+    protected function __invokePool($method, array $arguments = [], bool $fastFreed = false)
     {
         $connection = $this->__borrow();
         if ($connection->{static::KEY_RELEASED}) {
             throw new RuntimeException("Connection already has been released!");
         }
 
-        return $connection->{$method}(...$arguments);
+        try {
+            return $connection->{$method}(...$arguments);
+        } finally {
+            if ($fastFreed) {
+                $this->__return();
+            }
+        }
     }
 
     public function __command($method, array $parameters = [])
