@@ -8,6 +8,7 @@ use think\App;
 use think\helper\Arr;
 use think\Manager;
 use Zxin\Redis\Connections\PhpRedisConnection;
+use Zxin\Think\Redis\Pool\RedisConnections;
 use function is_null;
 
 class RedisManager extends Manager
@@ -74,7 +75,7 @@ class RedisManager extends Manager
 
     protected function resolveType(string $name)
     {
-        return PhpRedisConnection::class;
+        return RedisConnections::class;
     }
 
     protected function resolveConfig(string $name)

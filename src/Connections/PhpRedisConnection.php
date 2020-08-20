@@ -16,7 +16,7 @@ use function array_merge;
 class PhpRedisConnection
 {
     /** @var RedisExtend */
-    protected $client;
+    private $client;
 
     protected $config = [
         'host'       => '127.0.0.1',
@@ -47,12 +47,12 @@ class PhpRedisConnection
     }
 
     /**
+     * @param array $config
      * @return RedisExtend
      */
-    public function connection()
+    protected function __connection(array $config)
     {
         $client = new RedisExtend();
-        $config = $this->config;
         $persistent = $config['persistent'] ?? false;
 
         $parameters = [
@@ -99,26 +99,16 @@ class PhpRedisConnection
     }
 
     /**
-     * Get the underlying Redis client.
-     *
-     * @return RedisExtend|null
-     */
-    public function client()
-    {
-        return $this->client;
-    }
-
-    /**
      * Run a command against the Redis database.
      *
      * @param string $method
      * @param array  $parameters
      * @return mixed
      */
-    public function command($method, array $parameters = [])
+    public function __command($method, array $parameters = [])
     {
         if (null === $this->client) {
-            $this->client = $this->connection();
+            $this->client = $this->__connection($this->config);
         }
         return $this->client->{$method}(...$parameters);
     }
@@ -132,7 +122,7 @@ class PhpRedisConnection
      */
     public function __call($method, $parameters)
     {
-        return $this->command($method, $parameters);
+        return $this->__command($method, $parameters);
     }
 
     /**
@@ -144,7 +134,7 @@ class PhpRedisConnection
      */
     public function scan(&$iterator, $pattern = null, $count = 0)
     {
-        return $this->command(__FUNCTION__, [&$iterator, $pattern, $count]);
+        return $this->__command(__FUNCTION__, [&$iterator, $pattern, $count]);
     }
 
     /**
@@ -157,7 +147,7 @@ class PhpRedisConnection
      */
     public function sScan($key, &$iterator, $pattern = null, $count = 0)
     {
-        return $this->command(__FUNCTION__, [$key, &$iterator, $pattern, $count]);
+        return $this->__command(__FUNCTION__, [$key, &$iterator, $pattern, $count]);
     }
 
     /**
@@ -170,7 +160,7 @@ class PhpRedisConnection
      */
     public function hScan($key, &$iterator, $pattern = null, $count = 0)
     {
-        return $this->command(__FUNCTION__, [$key, &$iterator, $pattern, $count]);
+        return $this->__command(__FUNCTION__, [$key, &$iterator, $pattern, $count]);
     }
 
     /**
@@ -183,7 +173,7 @@ class PhpRedisConnection
      */
     public function zScan($key, &$iterator, $pattern = null, $count = 0)
     {
-        return $this->command(__FUNCTION__, [$key, &$iterator, $pattern, $count]);
+        return $this->__command(__FUNCTION__, [$key, &$iterator, $pattern, $count]);
     }
 
     public function __destruct()
