@@ -24,13 +24,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: openssl, posix #optional, setup extensions
+          tools: pecl
+          extensions: openssl, swoole, posix #optional, setup extensions
           # coverage: xdebug #optional, setup coverage driver
           ini-values: pcov.directory=., pcov.exclude="~vendor~"
           coverage: pcov #optional, setup coverage driver
