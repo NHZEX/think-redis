@@ -1,9 +1,8 @@
 <?php
 
-namespace Zxin\Tests\Data;
+namespace Zxin\Redis\Model;
 
 use MessagePack\MessagePack;
-use Zxin\Redis\Model\TypeTransform;
 
 class MsgpackType extends TypeTransform
 {

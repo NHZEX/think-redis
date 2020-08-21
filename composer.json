@@ -24,6 +24,8 @@
         "topthink/think-swoole": "^3.0.9"
     },
     "suggest": {
+        "topthink/think-swoole": "Connection pool support",
+        "rybakit/msgpack": "Redis model type msgpack serialization"
     },
     "autoload": {
         "psr-4": {

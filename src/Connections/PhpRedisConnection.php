@@ -26,6 +26,7 @@ class PhpRedisConnection
         'timeout'    => 1,
         'persistent' => false,
         'prefix'     => null,
+        'options'    => [],
     ];
 
     /**
@@ -86,6 +87,9 @@ class PhpRedisConnection
             }
             if (!empty($config['read_timeout'])) {
                 $client->setOption(Redis::OPT_READ_TIMEOUT, $config['read_timeout']);
+            }
+            foreach ($config['options'] ?? [] as $key => $value) {
+                $client->setOption($key, $value);
             }
         } catch (RedisException $exception) {
             throw new \Zxin\Redis\Exception\RedisException(

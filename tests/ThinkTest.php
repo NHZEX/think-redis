@@ -6,10 +6,19 @@ namespace Zxin\Tests;
 use PHPUnit\Framework\TestCase;
 use think\App;
 use Zxin\Think\Redis\RedisManager;
+use Zxin\Think\Redis\Service;
 use function serialize;
 
-class ThinkCacheTest extends TestCase
+class ThinkTest extends TestCase
 {
+    public function testTpService()
+    {
+        $app = App::getInstance();
+        $app->register(Service::class);
+
+        $this->assertTrue($app->has('redis'));
+    }
+
     public function testCache()
     {
         $key = 'test:' . __METHOD__;

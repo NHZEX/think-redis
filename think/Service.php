@@ -9,8 +9,4 @@ class Service extends \think\Service
     {
         $this->app->bind('redis', RedisManager::class);
     }
-
-    public function boot()
-    {
-    }
 }

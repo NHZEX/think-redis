@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Redis\Pool;
 
+use Redis;
 use Smf\ConnectionPool\Connectors\ConnectorInterface;
 use think\helper\Arr;
 use function call_user_func;
@@ -15,11 +16,11 @@ class PoolConnector implements ConnectorInterface
     public static function pullPoolConfig(&$config)
     {
         return [
-            'minActive'         => Arr::pull($config, 'min_active', 0),
-            'maxActive'         => Arr::pull($config, 'max_active', 10),
-            'maxWaitTime'       => Arr::pull($config, 'max_wait_time', 5),
-            'maxIdleTime'       => Arr::pull($config, 'max_idle_time', 20),
-            'idleCheckInterval' => Arr::pull($config, 'idle_check_interval', 10),
+            'minActive'         => Arr::pull($config, 'pool.min_active', 0),
+            'maxActive'         => Arr::pull($config, 'pool.max_active', 10),
+            'maxWaitTime'       => Arr::pull($config, 'pool.max_wait_time', 5),
+            'maxIdleTime'       => Arr::pull($config, 'pool.max_idle_time', 30),
+            'idleCheckInterval' => Arr::pull($config, 'pool.idle_check_interval', 60),
         ];
     }
 
@@ -35,11 +36,14 @@ class PoolConnector implements ConnectorInterface
 
     public function disconnect($connection)
     {
+        /**@var Redis $connection */
+        $connection->close();
     }
 
     public function isConnected($connection): bool
     {
-        return true;
+        /**@var Redis $connection */
+        return $connection->isConnected();
     }
 
     public function reset($connection, array $config)
@@ -48,6 +52,6 @@ class PoolConnector implements ConnectorInterface
 
     public function validate($connection): bool
     {
-        return true;
+        return $connection instanceof Redis;
     }
 }

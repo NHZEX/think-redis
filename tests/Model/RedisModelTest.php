@@ -5,8 +5,8 @@ namespace Zxin\Tests\Model;
 
 use PHPUnit\Framework\TestCase;
 use Zxin\Redis\Exception\RedisModelException;
+use Zxin\Redis\Model\MsgpackType;
 use Zxin\Redis\Model\TypeTransformManage;
-use Zxin\Tests\Data\MsgpackType;
 use Zxin\Tests\Data\RedisModelA;
 use Zxin\Tests\Data\RedisModelACopy;
 use Zxin\Tests\Data\RedisModelB;
