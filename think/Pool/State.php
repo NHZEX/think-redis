@@ -8,9 +8,9 @@ use function strtolower;
 
 class State
 {
+    const KEY_RELEASED = '__released';
     const KEY_LOCK_TRANSACTION = '__lock_transaction';
     const KEY_LOCK_WATCH = '__lock_watch';
-    const KEY_LOCK_SCAN = '__lock_scan';
 
     const M_T_MULTI   = 'multi';
     const M_T_EXEC    = 'exec';
