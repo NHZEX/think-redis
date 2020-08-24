@@ -60,6 +60,18 @@ class RedisConnections extends PhpRedisConnection
         $this->pool->init();
     }
 
+    protected function __closePool()
+    {
+        if ($this->pool) {
+            $this->pool->close();
+        }
+    }
+
+    public function __pool(): ConnectionPool
+    {
+        return $this->pool;
+    }
+
     protected function __poolName()
     {
         return $this->poolName;
@@ -170,5 +182,11 @@ class RedisConnections extends PhpRedisConnection
             }
             return $this->__invokePool($method, $parameters, $this->fastFreed);
         }
+    }
+
+    public function __destruct()
+    {
+        $this->__closePool();
+        parent::__destruct();
     }
 }
