@@ -34,6 +34,9 @@ class RedisConnections extends PhpRedisConnection
     /** @var ConnectionPool */
     private $pool;
 
+    /** @var bool */
+    private $closed = false;
+
     public function __construct(array $config, App $app)
     {
         $this->__init();
@@ -50,6 +53,9 @@ class RedisConnections extends PhpRedisConnection
 
     protected function __initPool()
     {
+        if ($this->closed) {
+            throw new RedisPoolException('pool is closed.');
+        }
         $this->fastFreed = (bool) ($this->config['fast_freed'] ?? false);
         $this->autoDiscard = (bool) ($this->config['auto_discard'] ?? false);
         $this->pool = new ConnectionPool(
@@ -60,10 +66,12 @@ class RedisConnections extends PhpRedisConnection
         $this->pool->init();
     }
 
-    protected function __closePool()
+    public function __closePool()
     {
         if ($this->pool) {
+            $this->closed = true;
             $this->pool->close();
+            $this->pool = null;
         }
     }
 

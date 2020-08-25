@@ -13,6 +13,11 @@ use function is_null;
 
 class RedisManager extends Manager
 {
+    /**
+     * @var RedisConnections[]
+     */
+    protected $drivers = [];
+
     public static function getInstance(): RedisManager
     {
         return App::getInstance()->make(static::class);
@@ -81,5 +86,25 @@ class RedisManager extends Manager
     protected function resolveConfig(string $name)
     {
         return $this->getConnectionsConfig($name);
+    }
+
+    /**
+     * 移除一个驱动实例
+     *
+     * @param array|string|null $name
+     * @return $this
+     */
+    public function forgetDriver($name = null)
+    {
+        $name = $name ?? $this->getDefaultDriver();
+
+        foreach ((array) $name as $cacheName) {
+            if (isset($this->drivers[$cacheName])) {
+                $this->drivers[$cacheName]->__closePool();
+                unset($this->drivers[$cacheName]);
+            }
+        }
+
+        return $this;
     }
 }
