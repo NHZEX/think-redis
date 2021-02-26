@@ -145,9 +145,9 @@ class RedisModel
         return sha1(serialize($this->type));
     }
 
-    public function refreshTTL(int $ttl)
+    public function refreshTTL(?int $ttl)
     {
-        $this->redis->expire($this->table, $ttl);
+        $this->redis->expire($this->table ?? $this->defaultTTL, $ttl);
     }
 
     public function destroy()
