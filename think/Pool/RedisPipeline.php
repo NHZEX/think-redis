@@ -29,11 +29,18 @@ class RedisPipeline
         $this->chain = $chain;
     }
 
-    public function __call($method, $arguments)
+    /**
+     * @param string $method
+     * @param array  $arguments
+     * @return RedisPipeline|mixed
+     */
+    public function __call(string $method, array $arguments)
     {
         try {
             $result = $this->chain->{$method}(...$arguments);
-            $this->connections->__isFastFreed() && State::migrate($method, $this->redis);
+            if ($this->connections->__isFastFreed()) {
+                State::migrate($method, $this->redis);
+            }
             if ($result instanceof Redis) {
                 $result = $this;
             }

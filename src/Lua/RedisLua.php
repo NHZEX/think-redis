@@ -69,6 +69,12 @@ abstract class RedisLua
         return true;
     }
 
+    /**
+     * @param PhpRedisConnection $redis
+     * @param array              $keys
+     * @param array              $argv
+     * @return mixed
+     */
     protected function invoke(PhpRedisConnection $redis, array $keys, array $argv = [])
     {
         if (count($keys) !== $this->numKeys()) {

@@ -18,7 +18,7 @@ class PoolConnector implements ConnectorInterface
     /** @var array */
     protected $objRecord = [];
 
-    public static function pullPoolConfig(&$config)
+    public static function pullPoolConfig(array &$config): array
     {
         return [
             'minActive'         => Arr::pull($config, 'pool.min_active', 0),
@@ -34,6 +34,10 @@ class PoolConnector implements ConnectorInterface
         $this->creator = $creator;
     }
 
+    /**
+     * @param array $config
+     * @return Redis
+     */
     public function connect(array $config)
     {
         /**@var Redis $connection */

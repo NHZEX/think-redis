@@ -23,6 +23,7 @@ use function substr;
  */
 class RedisExtend extends Redis
 {
+    /** @var string[] */
     private $type = [
         Redis::REDIS_NOT_FOUND => 'null',
         Redis::REDIS_STRING => 'string',
@@ -35,7 +36,7 @@ class RedisExtend extends Redis
 
     public function getServerVersion(): ?string
     {
-        /** @var array $redis_info */
+        /** @var array<string, int|string> $redis_info */
         $redis_info = $this->info('SERVER');
         if (empty($redis_info)) {
             return null;
@@ -43,7 +44,12 @@ class RedisExtend extends Redis
         return $redis_info['redis_version'];
     }
 
-    public function __call($name, $arguments)
+    /**
+     * @param string $name
+     * @param array  $arguments
+     * @return mixed
+     */
+    public function __call(string $name, array $arguments)
     {
         if (str_starts_with($name, 'isType')) {
             $type = $this->type($arguments[0]);

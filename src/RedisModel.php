@@ -86,7 +86,7 @@ class RedisModel
         $this->redis = $redis;
     }
 
-    public function load()
+    public function load(): void
     {
         if ($this->integrityCheck && !LuaHashModelCheck::eval(
             $this->redis,
@@ -115,7 +115,7 @@ class RedisModel
         }
     }
 
-    public function save(int $ttl = 0)
+    public function save(int $ttl = 0): bool
     {
         $ttl = max($ttl ?: $this->defaultTTL, 0);
         if ($this->metadataCheck
@@ -149,17 +149,17 @@ class RedisModel
         return sha1(serialize($this->type));
     }
 
-    public function refreshTTL(?int $ttl)
+    public function refreshTTL(?int $ttl): void
     {
         $this->redis->expire($this->table ?? $this->defaultTTL, $ttl);
     }
 
-    public function destroy()
+    public function destroy(): void
     {
         $this->redis->del($this->table);
     }
 
-    public function isExist()
+    public function isExist(): bool
     {
         return $this->redis->isTypeHash($this->table);
     }
@@ -214,6 +214,11 @@ class RedisModel
         $this->data[$name] = $value;
     }
 
+    /**
+     * @param string $value
+     * @param string $type
+     * @return mixed
+     */
     protected function readTransform(string $value, string $type)
     {
         switch ($type) {
@@ -238,6 +243,11 @@ class RedisModel
         }
     }
 
+    /**
+     * @param mixed  $value
+     * @param string $type
+     * @return string
+     */
     protected function writeTransform($value, string $type): string
     {
         switch ($type) {

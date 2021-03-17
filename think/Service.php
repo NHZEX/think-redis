@@ -6,7 +6,7 @@ namespace Zxin\Think\Redis;
 
 class Service extends \think\Service
 {
-    public function register()
+    public function register(): void
     {
         $this->app->bind('redis', RedisManager::class);
     }

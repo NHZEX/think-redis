@@ -9,7 +9,6 @@ use Redis;
 use RuntimeException;
 use Smf\ConnectionPool\ConnectionPool;
 use Swoole\Coroutine;
-use think\App;
 use Zxin\Redis\Connections\PhpRedisConnection;
 use Zxin\Redis\Exception\RedisPoolException;
 use function class_exists;
@@ -18,6 +17,7 @@ use function sprintf;
 
 class RedisConnections extends PhpRedisConnection
 {
+    /** @var bool */
     private static $swooleExist = false;
 
     /** @var string */
@@ -29,30 +29,25 @@ class RedisConnections extends PhpRedisConnection
     /** @var bool */
     private $autoDiscard = false;
 
-    /** @var App */
-    private $app;
-
     /** @var ConnectionPool|null */
     private $pool;
 
     /** @var bool */
     private $closed = false;
 
-    public function __construct(array $config, App $app)
+    public function __construct(array $config)
     {
         $this->__init();
-
-        $this->app = $app;
         parent::__construct($config);
     }
 
-    private function __init()
+    private function __init(): void
     {
         self::$swooleExist = class_exists(Coroutine::class);
         $this->poolName = 'connection.' . spl_object_id($this);
     }
 
-    protected function __initPool()
+    protected function __initPool(): void
     {
         if ($this->closed) {
             throw new RedisPoolException('pool is closed.');
@@ -67,7 +62,7 @@ class RedisConnections extends PhpRedisConnection
         $this->pool->init();
     }
 
-    public function __closePool()
+    public function __closePool(): void
     {
         if ($this->pool) {
             $this->closed = true;
@@ -81,7 +76,7 @@ class RedisConnections extends PhpRedisConnection
         return $this->pool;
     }
 
-    protected function __poolName()
+    protected function __poolName(): string
     {
         return $this->poolName;
     }
@@ -109,7 +104,7 @@ class RedisConnections extends PhpRedisConnection
         });
     }
 
-    public function __return(bool $all = false)
+    public function __return(bool $all = false): void
     {
         if ($all) {
             /** @var Redis $connection */
@@ -161,7 +156,13 @@ class RedisConnections extends PhpRedisConnection
         }
     }
 
-    protected function __invokePool($method, array $arguments = [], bool $fastFreed = false)
+    /**
+     * @param string $method
+     * @param array  $arguments
+     * @param bool   $fastFreed
+     * @return RedisPipeline
+     */
+    protected function __invokePool(string $method, array $arguments = [], bool $fastFreed = false)
     {
         $connection = $this->__borrow();
         if ($connection->{State::KEY_RELEASED}) {
@@ -172,7 +173,9 @@ class RedisConnections extends PhpRedisConnection
             if ($result instanceof Redis) {
                 $result = new RedisPipeline($this, $connection, $result);
             }
-            $fastFreed && State::migrate($method, $connection);
+            if ($fastFreed) {
+                State::migrate($method, $connection);
+            }
         } finally {
             if ($fastFreed) {
                 $this->__return();
@@ -181,7 +184,12 @@ class RedisConnections extends PhpRedisConnection
         return $result;
     }
 
-    public function __command($method, array $parameters = [])
+    /**
+     * @param string $method
+     * @param array  $parameters
+     * @return mixed|RedisPipeline
+     */
+    public function __command(string $method, array $parameters = [])
     {
         if (!self::$swooleExist || Coroutine::getCid() === -1) {
             return parent::__command($method, $parameters);

@@ -14,7 +14,7 @@ class TypeTransformManage
     /**
      * @param TypeTransform $transform
      */
-    public static function add(TypeTransform $transform)
+    public static function add(TypeTransform $transform): void
     {
         self::$transforms[$transform->getName()] = $transform;
     }

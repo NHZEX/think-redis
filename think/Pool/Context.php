@@ -12,14 +12,17 @@ class Context
     /**
      * 获取协程上下文
      * @param int $cid
-     * @return Coroutine\Context
+     * @return Coroutine\Context|null
      */
-    public static function get($cid = 0)
+    public static function get(int $cid = 0): ?Coroutine\Context
     {
         return Coroutine::getContext($cid);
     }
 
-    public static function getDataObject()
+    /**
+     * @return ArrayObject<string|int, mixed>
+     */
+    public static function getDataObject(): ArrayObject
     {
         $context = static::get();
         if (!isset($context[static::class])) {
@@ -28,6 +31,11 @@ class Context
         return $context[static::class];
     }
 
+    /**
+     * @param string $key
+     * @param mixed  $default
+     * @return false|mixed|null
+     */
     public static function getData(string $key, $default = null)
     {
         if (static::hasData($key)) {
@@ -36,17 +44,21 @@ class Context
         return $default;
     }
 
-    public static function hasData(string $key)
+    public static function hasData(string $key): bool
     {
         return static::getDataObject()->offsetExists($key);
     }
 
-    public static function setData(string $key, $value)
+    /**
+     * @param string $key
+     * @param mixed  $value
+     */
+    public static function setData(string $key, $value): void
     {
         static::getDataObject()->offsetSet($key, $value);
     }
 
-    public static function removeData(string $key)
+    public static function removeData(string $key): void
     {
         if (static::hasData($key)) {
             static::getDataObject()->offsetUnset($key);
@@ -56,7 +68,7 @@ class Context
     /**
      * @param string $key
      * @param callable $value
-     * @return mixed|null
+     * @return mixed
      */
     public static function rememberData(string $key, callable $value)
     {
@@ -71,7 +83,7 @@ class Context
         return $result;
     }
 
-    public static function clear()
+    public static function clear(): void
     {
         static::getDataObject()->exchangeArray([]);
     }

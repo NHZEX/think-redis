@@ -67,10 +67,10 @@ class RedisManager extends Manager
      * 获取驱动配置
      * @param string      $connections
      * @param string|null $name
-     * @param null        $default
-     * @return array
+     * @param array|null  $default
+     * @return array<string, mixed>|null
      */
-    public function getConnectionsConfig(string $connections, string $name = null, $default = null)
+    public function getConnectionsConfig(string $connections, string $name = null, $default = null): ?array
     {
         if ($config = $this->getConfig("connections.{$connections}")) {
             return Arr::get($config, $name, $default);

@@ -19,13 +19,13 @@ class State
     public const M_T_WATCH   = 'watch';
     public const M_T_UNWATCH = 'unwatch';
 
-    public static function init(Redis $connection)
+    public static function init(Redis $connection): void
     {
         $connection->{self::KEY_LOCK_TRANSACTION} = false;
         $connection->{self::KEY_LOCK_WATCH} = false;
     }
 
-    public static function migrate(string $method, Redis $connection)
+    public static function migrate(string $method, Redis $connection): void
     {
         $method = strtolower($method);
         switch ($method) {
