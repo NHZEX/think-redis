@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Redis\Model;
@@ -20,11 +21,11 @@ abstract class TypeTransform
      * @param string $value
      * @return mixed
      */
-    public abstract function readTransform(string $value);
+    abstract public function readTransform(string $value);
 
     /**
      * @param mixed $value
      * @return string
      */
-    public abstract function writeTransform($value): string;
+    abstract public function writeTransform($value): string;
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Redis;
@@ -15,6 +16,8 @@ use function json_decode;
 use function json_encode;
 use function max;
 use function serialize;
+use function count;
+use function sha1;
 
 class RedisModel
 {
@@ -118,7 +121,8 @@ class RedisModel
         if ($this->metadataCheck
             && (
                 count($this->data) > 0
-                || $this->getData('__metaCheck') !== ($hash = $this->makeMetadataHash()
+                || $this->getData('__metaCheck') !== (
+                    $hash = $this->makeMetadataHash()
                 )
             )
         ) {

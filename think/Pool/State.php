@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Think\Redis\Pool;
@@ -8,15 +9,15 @@ use function strtolower;
 
 class State
 {
-    const KEY_RELEASED = '__released';
-    const KEY_LOCK_TRANSACTION = '__lock_transaction';
-    const KEY_LOCK_WATCH = '__lock_watch';
+    public const KEY_RELEASED = '__released';
+    public const KEY_LOCK_TRANSACTION = '__lock_transaction';
+    public const KEY_LOCK_WATCH = '__lock_watch';
 
-    const M_T_MULTI   = 'multi';
-    const M_T_EXEC    = 'exec';
-    const M_T_DISCARD = 'discard';
-    const M_T_WATCH   = 'watch';
-    const M_T_UNWATCH = 'unwatch';
+    public const M_T_MULTI   = 'multi';
+    public const M_T_EXEC    = 'exec';
+    public const M_T_DISCARD = 'discard';
+    public const M_T_WATCH   = 'watch';
+    public const M_T_UNWATCH = 'unwatch';
 
     public static function init(Redis $connection)
     {

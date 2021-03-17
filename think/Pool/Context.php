@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Think\Redis\Pool;
@@ -74,5 +75,4 @@ class Context
     {
         static::getDataObject()->exchangeArray([]);
     }
-
 }

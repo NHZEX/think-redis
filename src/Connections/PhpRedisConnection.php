@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Redis\Connections;
@@ -7,6 +8,8 @@ use Redis;
 use RedisException;
 use Zxin\Redis\RedisExtend;
 use function array_merge;
+use function version_compare;
+use function phpversion;
 
 /**
  * Class PhpRedisConnection

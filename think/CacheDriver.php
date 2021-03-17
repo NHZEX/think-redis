@@ -4,6 +4,8 @@ namespace Zxin\Think\Redis;
 
 use think\cache\Driver;
 use Zxin\Redis\Connections\PhpRedisConnection;
+use function array_merge;
+use function is_null;
 
 class CacheDriver extends Driver
 {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Redis\Lua;
@@ -10,6 +11,7 @@ use function array_merge;
 use function is_string;
 use function sha1;
 use function str_starts_with;
+use function count;
 
 abstract class RedisLua
 {
@@ -94,7 +96,7 @@ abstract class RedisLua
         return $result;
     }
 
-    protected abstract function numKeys(): int;
+    abstract protected function numKeys(): int;
 
-    protected abstract function luaCode(): string;
+    abstract protected function luaCode(): string;
 }
