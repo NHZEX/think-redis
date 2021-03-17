@@ -101,7 +101,7 @@ class RedisConnections extends PhpRedisConnection
 
             $connection->{State::KEY_RELEASED} = false;
 
-            Coroutine::defer(function () use ($connection) {
+            Coroutine::defer(function () {
                 $this->__return(true);
             });
 

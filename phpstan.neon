@@ -1,0 +1,11 @@
+parameters:
+    level: 3
+    paths:
+        - src
+        - think
+    scanFiles:
+    stubFiles:
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - "#^Access to an undefined property Redis::\\$__(released|lock_\\w+)\\.$#"
+includes:

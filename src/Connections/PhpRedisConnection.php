@@ -18,7 +18,7 @@ use function phpversion;
  */
 class PhpRedisConnection
 {
-    /** @var RedisExtend */
+    /** @var RedisExtend|null */
     private $client;
 
     protected $config = [
@@ -133,10 +133,10 @@ class PhpRedisConnection
     }
 
     /**
-     * @param      $iterator
+     * @param int|null  $iterator
      * @param null $pattern
-     * @param int  $count
-     * @return array|bool
+     * @param int $count
+     * @return array|false
      * @see \Redis::scan
      */
     public function scan(&$iterator, $pattern = null, $count = 0)
@@ -145,11 +145,11 @@ class PhpRedisConnection
     }
 
     /**
-     * @param      $key
-     * @param      $iterator
-     * @param null $pattern
+     * @param string $key
+     * @param int|null $iterator
+     * @param string|null $pattern
      * @param int  $count
-     * @return array|bool
+     * @return array|false
      * @see \Redis::sScan
      */
     public function sScan($key, &$iterator, $pattern = null, $count = 0)
@@ -158,9 +158,9 @@ class PhpRedisConnection
     }
 
     /**
-     * @param      $key
-     * @param      $iterator
-     * @param null $pattern
+     * @param string $key
+     * @param int|null $iterator
+     * @param string|null $pattern
      * @param int  $count
      * @return array
      * @see \Redis::hScan
@@ -171,11 +171,11 @@ class PhpRedisConnection
     }
 
     /**
-     * @param      $key
-     * @param      $iterator
-     * @param null $pattern
+     * @param string $key
+     * @param int|null $iterator
+     * @param string|null $pattern
      * @param int  $count
-     * @return array|bool
+     * @return array|false
      * @see \Redis::zScan
      */
     public function zScan($key, &$iterator, $pattern = null, $count = 0)

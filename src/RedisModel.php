@@ -177,7 +177,7 @@ class RedisModel
     }
 
     /**
-     * @param $name
+     * @param string|null $name
      * @return int|bool|string|array
      */
     public function getData(?string $name)
@@ -254,8 +254,8 @@ class RedisModel
     }
 
     /**
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param mixed $value
      * @return void
      */
     public function __set(string $name, $value)
