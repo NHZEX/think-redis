@@ -32,7 +32,7 @@ class RedisConnections extends PhpRedisConnection
     /** @var App */
     private $app;
 
-    /** @var ConnectionPool */
+    /** @var ConnectionPool|null */
     private $pool;
 
     /** @var bool */
