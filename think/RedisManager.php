@@ -24,6 +24,11 @@ class RedisManager extends Manager
         return App::getInstance()->make(static::class);
     }
 
+    public static function hasInstance(): bool
+    {
+        return App::getInstance()->has(static::class);
+    }
+
     /**
      * @param string|null $name
      * @return PhpRedisConnection
