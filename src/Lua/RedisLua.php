@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use Zxin\Redis\Connections\PhpRedisConnection;
 use Zxin\Redis\Exception\RedisLuaException;
 use function array_merge;
-use function is_string;
+use function is_null;
 use function sha1;
 use function str_starts_with;
 use function count;
@@ -54,9 +54,8 @@ abstract class RedisLua
 
     /**
      * @param PhpRedisConnection $redis
-     * @return bool
      */
-    public function load(PhpRedisConnection $redis): bool
+    public function load(PhpRedisConnection $redis): void
     {
         if (!$this->loaded($redis)) {
             $redis->clearLastError();
@@ -64,9 +63,10 @@ abstract class RedisLua
             if (false === $result) {
                 throw new RedisLuaException($redis->getLastError());
             }
-            return $this->getSha1() === $result;
+            if ($this->getSha1() !== $result) {
+                throw new RedisLuaException('load lua fail');
+            }
         }
-        return true;
     }
 
     /**
@@ -81,22 +81,21 @@ abstract class RedisLua
             throw new InvalidArgumentException('Keys length error.');
         }
 
-        $retry = 0;
-        do {
-            if ($retry > 0) {
-                $this->load($redis);
-            }
-            $redis->clearLastError();
-            $result = $redis->evalSha($this->getSha1(), array_merge($keys, $argv), $this->numKeys());
-        } while (
-            $result === false
-            && is_string($error = $redis->getLastError())
+        $isRetry = false;
+        RETRY_EVAL:
+        $redis->clearLastError();
+        $result = $redis->evalSha($this->getSha1(), array_merge($keys, $argv), $this->numKeys());
+        if (false === $result
+            && !is_null($error = $redis->getLastError())
             && str_starts_with($error, 'NOSCRIPT')
-            && $retry++ === 0
-        );
-
-        if ($retry >= 2) {
-            throw new RedisLuaException($redis->getLastError());
+        ) {
+            if (false === $isRetry) {
+                $isRetry = true;
+                $this->load($redis);
+                goto RETRY_EVAL;
+            } else {
+                throw new RedisLuaException($redis->getLastError());
+            }
         }
 
         return $result;
