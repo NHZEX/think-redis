@@ -14,7 +14,6 @@
         "ext-json": "*",
         "ext-redis": "*",
         "phpstan/phpstan": "^0.12.81",
-        "swoole/ide-helper": "^4.5.11",
         "symfony/polyfill-php80": "^1.18",
         "topthink/framework": "^6.0.3"
     },
@@ -23,6 +22,7 @@
         "open-smf/connection-pool": "^1.0",
         "phpunit/phpunit": "^7|^8",
         "rybakit/msgpack": "^0.7.0",
+        "swoole/ide-helper": "^4.5.11",
         "symfony/var-dumper": "^4.4|^5.0"
     },
     "suggest": {
