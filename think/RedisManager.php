@@ -33,9 +33,18 @@ class RedisManager extends Manager
      * @param string|null $name
      * @return PhpRedisConnection
      */
-    public static function connection(string $name = null)
+    public static function store(string $name = null)
     {
         return self::getInstance()->driver($name);
+    }
+
+    /**
+     * @param string|null $name
+     * @return PhpRedisConnection
+     */
+    public static function connection(string $name = null)
+    {
+        return self::store($name);
     }
 
     /**
