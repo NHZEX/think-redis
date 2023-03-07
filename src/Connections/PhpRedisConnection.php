@@ -48,6 +48,15 @@ class PhpRedisConnection
         return $this->config;
     }
 
+    public function getClient(): ?Redis
+    {
+        if (null === $this->client) {
+            $this->client = $this->__connection($this->config);
+        }
+
+        return $this->client;
+    }
+
     protected function __connection(array $config): RedisExtend
     {
         $client     = new RedisExtend();

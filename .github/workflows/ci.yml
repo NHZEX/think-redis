@@ -15,6 +15,8 @@ jobs:
           - 7.3
           - 7.4
           - 8.0
+          - 8.1
+          - 8.2
     env:
       extensions: openssl, swoole, posix
       key: cache-v1 # can be any string, change to clear the extension cache.
