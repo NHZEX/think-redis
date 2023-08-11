@@ -4,6 +4,7 @@ namespace Zxin\Think\Redis;
 
 use think\cache\Driver;
 use Zxin\Redis\Connections\PhpRedisConnection;
+use DateInterval;
 use function array_merge;
 use function is_null;
 
@@ -76,7 +77,7 @@ class CacheDriver extends Driver
         return $this->unserialize($value);
     }
 
-    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
+    public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool
     {
         $this->writeTimes++;
 

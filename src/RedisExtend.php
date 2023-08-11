@@ -24,7 +24,7 @@ use function substr;
 class RedisExtend extends Redis
 {
     /** @var string[] */
-    private $type = [
+    private array $type = [
         Redis::REDIS_NOT_FOUND => 'null',
         Redis::REDIS_STRING => 'string',
         Redis::REDIS_SET => 'set',
@@ -45,8 +45,6 @@ class RedisExtend extends Redis
     }
 
     /**
-     * @param string $name
-     * @param array  $arguments
      * @return mixed
      */
     public function __call(string $name, array $arguments)

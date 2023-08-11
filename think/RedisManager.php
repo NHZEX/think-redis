@@ -68,7 +68,7 @@ class RedisManager extends Manager
      * @param mixed       $default 默认值
      * @return mixed
      */
-    public function getConfig(string $name = null, $default = null)
+    public function getConfig(string $name = null, mixed $default = null)
     {
         if (!is_null($name)) {
             return $this->app->config->get('redis.' . $name, $default);
@@ -79,7 +79,6 @@ class RedisManager extends Manager
 
     /**
      * 获取驱动配置
-     * @param string      $connections
      * @param string|null $name
      * @param array|null  $default
      * @return array<string, mixed>|null

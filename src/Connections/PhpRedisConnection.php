@@ -18,8 +18,7 @@ use function phpversion;
  */
 class PhpRedisConnection
 {
-    /** @var RedisExtend|null */
-    private $client;
+    private RedisExtend|Redis|null $client = null;
 
     /** @var array<string, string|int|bool|array|null> */
     protected $config = [
@@ -111,8 +110,6 @@ class PhpRedisConnection
     /**
      * Run a command against the Redis database.
      *
-     * @param string $method
-     * @param array  $parameters
      * @return mixed
      */
     public function __command(string $method, array $parameters = [])
@@ -126,8 +123,6 @@ class PhpRedisConnection
     /**
      * Pass other method calls down to the underlying client.
      *
-     * @param string $method
-     * @param array  $parameters
      * @return mixed
      */
     public function __call(string $method, array $parameters)
@@ -138,7 +133,6 @@ class PhpRedisConnection
     /**
      * @param int|null    $iterator
      * @param string|null $pattern
-     * @param int         $count
      * @return array|false
      * @see \Redis::scan
      */
@@ -148,10 +142,8 @@ class PhpRedisConnection
     }
 
     /**
-     * @param string      $key
      * @param int|null    $iterator
      * @param string|null $pattern
-     * @param int         $count
      * @return array|false
      * @see \Redis::sScan
      */
@@ -161,10 +153,8 @@ class PhpRedisConnection
     }
 
     /**
-     * @param string      $key
      * @param int|null    $iterator
      * @param string|null $pattern
-     * @param int         $count
      * @return array
      * @see \Redis::hScan
      */
@@ -174,10 +164,8 @@ class PhpRedisConnection
     }
 
     /**
-     * @param string      $key
      * @param int|null    $iterator
      * @param string|null $pattern
-     * @param int         $count
      * @return array|false
      * @see \Redis::zScan
      */

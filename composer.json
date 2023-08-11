@@ -16,10 +16,11 @@
         "topthink/framework": "~8.0.1"
     },
     "require-dev": {
-        "php-cs-fixer/shim": "^3.14",
         "open-smf/connection-pool": "^1.0",
+        "php-cs-fixer/shim": "^3.14",
         "phpstan/phpstan": "^1.10.28",
         "phpunit/phpunit": "^9",
+        "rector/rector": "^0.17.12",
         "swoole/ide-helper": "^4.8",
         "symfony/var-dumper": "^6.0"
     },

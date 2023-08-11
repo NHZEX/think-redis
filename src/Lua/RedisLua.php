@@ -36,14 +36,10 @@ abstract class RedisLua
     public function getSha1(): string
     {
         $name = $this->getName();
-        if (isset(self::$luaSha1[$name])) {
-            return self::$luaSha1[$name];
-        }
-        return self::$luaSha1[$name] = sha1($this->luaCode());
+        return self::$luaSha1[$name] ?? (self::$luaSha1[$name] = sha1($this->luaCode()));
     }
 
     /**
-     * @param PhpRedisConnection $redis
      * @return bool
      */
     public function loaded(PhpRedisConnection $redis): bool
@@ -51,9 +47,6 @@ abstract class RedisLua
         return $redis->script('exists', $this->getSha1())[0] > 0;
     }
 
-    /**
-     * @param PhpRedisConnection $redis
-     */
     public function load(PhpRedisConnection $redis): void
     {
         if (!$this->loaded($redis)) {
@@ -69,9 +62,6 @@ abstract class RedisLua
     }
 
     /**
-     * @param PhpRedisConnection $redis
-     * @param array              $keys
-     * @param array              $argv
      * @return mixed
      */
     protected function invoke(PhpRedisConnection $redis, array $keys, array $argv = [])
