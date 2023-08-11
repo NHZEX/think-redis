@@ -31,7 +31,7 @@ class RedisExtend extends Redis
         Redis::REDIS_LIST => 'list',
         Redis::REDIS_ZSET => 'zset',
         Redis::REDIS_HASH => 'hash',
-        Redis::REDIS_STREAM => 'stream'
+        Redis::REDIS_STREAM => 'stream',
     ];
 
     public function getServerVersion(): ?string

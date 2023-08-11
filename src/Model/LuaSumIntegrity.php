@@ -27,23 +27,23 @@ class LuaSumIntegrity extends RedisLua
          * return sha1(join('.', $keys));
          */
         return <<<LUA
-local hashKey = KEYS[1]
+            local hashKey = KEYS[1]
 
-if redis.call('EXISTS', hashKey) == 0 then
-  return false
-end
+            if redis.call('EXISTS', hashKey) == 0 then
+              return false
+            end
 
-local keys = redis.call('hKeys', hashKey)
-for i=table.getn(keys),1,-1 do
-  if keys[i] == '__integrity' or keys[i] == '__metaCheck' then
-    table.remove(keys, i)
-  end
-end
-table.sort(keys)
-local keysStr = table.concat(keys, '.')
+            local keys = redis.call('hKeys', hashKey)
+            for i=table.getn(keys),1,-1 do
+              if keys[i] == '__integrity' or keys[i] == '__metaCheck' then
+                table.remove(keys, i)
+              end
+            end
+            table.sort(keys)
+            local keysStr = table.concat(keys, '.')
 
-redis.call('hSet', hashKey, '__integrity', redis.sha1hex(keysStr))
-return true
-LUA;
+            redis.call('hSet', hashKey, '__integrity', redis.sha1hex(keysStr))
+            return true
+            LUA;
     }
 }

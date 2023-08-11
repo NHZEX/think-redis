@@ -17,7 +17,7 @@
         "topthink/framework": "^6.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.18",
+        "php-cs-fixer/shim": "^3.14",
         "open-smf/connection-pool": "^1.0",
         "phpstan/phpstan": "^0.12.91",
         "phpunit/phpunit": "^9",
