@@ -1,0 +1,12 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
+			count: 1
+			path: src/Lua/RedisLua.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\Pool\\\\Context\\:\\:get\\(\\) return type has no value type specified in iterable type Swoole\\\\Coroutine\\\\Context\\.$#"
+			count: 1
+			path: think/Pool/Context.php
+

@@ -10,20 +10,20 @@
         }
     ],
     "require": {
-        "php": "~7.2 | ~8.0",
+        "php": "~7.4 | ~8.0",
         "ext-json": "*",
         "ext-redis": "*",
         "symfony/polyfill-php80": "^1.18",
-        "topthink/framework": "^6.0.3"
+        "topthink/framework": "^6.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.18",
         "open-smf/connection-pool": "^1.0",
         "phpstan/phpstan": "^0.12.91",
-        "phpunit/phpunit": "^7|^8",
+        "phpunit/phpunit": "^9",
         "rybakit/msgpack": "^0.7.0",
-        "swoole/ide-helper": "^4.5.11",
-        "symfony/var-dumper": "^4.4|^5.0"
+        "swoole/ide-helper": "^4.8",
+        "symfony/var-dumper": "^5.4"
     },
     "suggest": {
         "open-smf/connection-pool": "Connection pool support",
