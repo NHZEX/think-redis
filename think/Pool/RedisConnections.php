@@ -139,7 +139,7 @@ class RedisConnections extends PhpRedisConnection
                 $this->pool->return($connection);
             }
         } else {
-            /** @var Redis $connection */
+            /** @var Redis|null $connection */
             $connection = Context::getData($this->__poolName());
             if (empty($connection)) {
                 return;

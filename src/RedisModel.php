@@ -27,15 +27,7 @@ class RedisModel
      * @var PhpRedisConnection
      */
     private $redis;
-    /**
-     * 未生效
-     * @var string
-     */
-    private $connection;
-    /**
-     * @var string
-     */
-    private $table;
+    private ?string $table;
     /**
      * 原始数据
      * @var array

@@ -19,7 +19,7 @@
     "require-dev": {
         "php-cs-fixer/shim": "^3.14",
         "open-smf/connection-pool": "^1.0",
-        "phpstan/phpstan": "^0.12.91",
+        "phpstan/phpstan": "^1.10.28",
         "phpunit/phpunit": "^9",
         "rybakit/msgpack": "^0.7.0",
         "swoole/ide-helper": "^4.8",

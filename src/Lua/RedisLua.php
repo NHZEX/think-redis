@@ -15,11 +15,10 @@ use function count;
 
 abstract class RedisLua
 {
-    /** @var string */
-    private $name;
+    protected ?string $name = null;
 
     /** @var string[] */
-    protected static $luaSha1;
+    protected static array $luaSha1;
 
     /**
      * @return string

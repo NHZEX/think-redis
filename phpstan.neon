@@ -5,7 +5,7 @@ parameters:
         - think
     scanFiles:
     stubFiles:
-    reportUnmatchedIgnoredErrors: false
+    reportUnmatchedIgnoredErrors: true
     ignoreErrors:
         - "#^Access to an undefined property Redis::\\$__(released|lock_\\w+)\\.$#"
         - "#has parameter \\$\\w+? with no value type specified in iterable type array.$#"
