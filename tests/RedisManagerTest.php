@@ -26,7 +26,6 @@ class RedisManagerTest extends TestCase
     public function testConnection()
     {
         $redis = RedisManager::connection();
-        /** @noinspection PhpParamsInspection */
         $result = $redis->ping();
         $this->assertTrue($result === true || $result === '+PONG');
 
