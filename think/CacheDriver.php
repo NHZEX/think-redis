@@ -62,11 +62,11 @@ class CacheDriver extends Driver
         $this->handler->del($keys);
     }
 
-    public function get($key, $default = null)
+    public function get(string $name, mixed $default = null): mixed
     {
         $this->readTimes++;
 
-        $value = $this->handler->get($this->getCacheKey($key));
+        $value = $this->handler->get($this->getCacheKey($name));
 
         /** @phpstan-ignore-next-line  暂时保持与tp驱动实现一致 */
         if (false === $value || is_null($value)) {
@@ -76,7 +76,7 @@ class CacheDriver extends Driver
         return $this->unserialize($value);
     }
 
-    public function set($key, $value, $ttl = null)
+    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
     {
         $this->writeTimes++;
 
@@ -97,7 +97,7 @@ class CacheDriver extends Driver
         return true;
     }
 
-    public function delete($key)
+    public function delete(string $key): bool
     {
         $this->writeTimes++;
 
@@ -105,7 +105,7 @@ class CacheDriver extends Driver
         return $result > 0;
     }
 
-    public function clear()
+    public function clear(): bool
     {
         $this->writeTimes++;
 
@@ -113,9 +113,9 @@ class CacheDriver extends Driver
         return true;
     }
 
-    public function has($key)
+    public function has(string $name): bool
     {
-        return $this->handler->exists($this->getCacheKey($key)) ? true : false;
+        return (bool) $this->handler->exists($this->getCacheKey($name));
     }
 
     /**
