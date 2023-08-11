@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         php-versions:
-          - 7.4
+          - 8.0
     env:
       extensions: openssl, swoole, posix
       key: cache-v1 # can be any string, change to clear the extension cache.
@@ -50,9 +50,7 @@ jobs:
           php-version: ${{ matrix.php-versions }}
           tools: pecl
           extensions: ${{ env.extensions }}
-          # coverage: xdebug #optional, setup coverage driver
-          ini-values: pcov.directory=., pcov.exclude="~vendor~"
-          coverage: pcov #optional, setup coverage driver
+          coverage: xdebug
 
       - name: Check Version
         run: |
@@ -65,7 +63,7 @@ jobs:
 
       - name: Get composer cache directory
         id: composercache
-        run: echo "$(composer config cache-files-dir)" >> $GITHUB_OUTPUT"
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
         uses: actions/cache@v3
