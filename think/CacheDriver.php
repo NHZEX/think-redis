@@ -39,7 +39,7 @@ class CacheDriver extends Driver
         $this->handler = RedisManager::connection($this->options['connection']);
     }
 
-    public function inc(string $name, int $step = 1)
+    public function inc($name, $step = 1)
     {
         $this->writeTimes++;
 
@@ -48,7 +48,7 @@ class CacheDriver extends Driver
         return $this->handler->incrby($key, $step);
     }
 
-    public function dec(string $name, int $step = 1)
+    public function dec($name, $step = 1)
     {
         $this->writeTimes++;
 
@@ -57,17 +57,17 @@ class CacheDriver extends Driver
         return $this->handler->decrby($key, $step);
     }
 
-    public function clearTag(array $keys)
+    public function clearTag($keys)
     {
         // 指定标签清除
         $this->handler->del($keys);
     }
 
-    public function get(string $name, mixed $default = null): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
         $this->readTimes++;
 
-        $value = $this->handler->get($this->getCacheKey($name));
+        $value = $this->handler->get($this->getCacheKey($key));
 
         /** @phpstan-ignore-next-line  暂时保持与tp驱动实现一致 */
         if (false === $value || is_null($value)) {
@@ -114,9 +114,9 @@ class CacheDriver extends Driver
         return true;
     }
 
-    public function has(string $name): bool
+    public function has($key): bool
     {
-        return (bool) $this->handler->exists($this->getCacheKey($name));
+        return (bool) $this->handler->exists($this->getCacheKey($key));
     }
 
     /**
@@ -125,7 +125,7 @@ class CacheDriver extends Driver
      * @param mixed  $value 数据
      * @return void
      */
-    public function push(string $name, $value): void
+    public function push($name, $value): void
     {
         $this->handler->sAdd($name, $value);
     }
