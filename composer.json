@@ -13,7 +13,7 @@
         "php": "~8.0",
         "ext-json": "*",
         "ext-redis": "*",
-        "topthink/framework": "~8.0.1"
+        "topthink/framework": "~8.0.1|~8.1.2"
     },
     "require-dev": {
         "open-smf/connection-pool": "^1.0",
