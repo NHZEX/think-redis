@@ -42,7 +42,7 @@ class RedisManager extends Manager
      * @param string|null $name
      * @return PhpRedisConnection
      */
-    public static function connection(string $name = null)
+    public static function connection(?string $name = null)
     {
         return self::store($name);
     }
@@ -68,7 +68,7 @@ class RedisManager extends Manager
      * @param mixed       $default 默认值
      * @return mixed
      */
-    public function getConfig(string $name = null, mixed $default = null)
+    public function getConfig(?string $name = null, mixed $default = null)
     {
         if (!is_null($name)) {
             return $this->app->config->get('redis.' . $name, $default);
@@ -83,7 +83,7 @@ class RedisManager extends Manager
      * @param array|null  $default
      * @return array<string, mixed>|null
      */
-    public function getConnectionsConfig(string $connections, string $name = null, $default = null): ?array
+    public function getConnectionsConfig(string $connections, ?string $name = null, $default = null): ?array
     {
         if ($config = $this->getConfig("connections.{$connections}")) {
             return Arr::get($config, $name, $default);
