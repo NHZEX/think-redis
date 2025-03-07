@@ -14,6 +14,8 @@ jobs:
           - 8.0
           - 8.1
           - 8.2
+          - 8.3
+          - 8.4
     env:
       extensions: openssl, swoole, posix
       key: cache-v1 # can be any string, change to clear the extension cache.
@@ -30,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup cache environment
         id: extcache
@@ -69,7 +71,7 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composercache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
