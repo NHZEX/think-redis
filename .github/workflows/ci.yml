@@ -2,6 +2,9 @@ name: ci
 
 on: [push]
 
+permissions:
+  contents: read
+
 jobs:
   phpunit:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
@@ -43,7 +46,7 @@ jobs:
           key: ${{ env.key }}
 
       - name: Cache extensions
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.extcache.outputs.dir }}
           key: ${{ steps.extcache.outputs.key }}
