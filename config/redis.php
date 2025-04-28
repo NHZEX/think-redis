@@ -13,6 +13,13 @@ return [
             'timeout'    => 3,
             'options'    => [],
             'persistent' => false,
+            'pool'       => [
+                'min_active' => 0,
+                'max_active' => 10,
+                'max_wait_time' => 5,
+                'max_idle_time' => 30,
+                'idle_check_interval' => 60,
+            ],
         ],
         'poolDemo' => [
             'host'       => '127.0.0.1',

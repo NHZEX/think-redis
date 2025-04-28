@@ -19,10 +19,11 @@
         "open-smf/connection-pool": "^1.0|^2.0",
         "php-cs-fixer/shim": "^3.14",
         "phpstan/phpstan": "^1.10.28",
-        "phpunit/phpunit": "^9",
+        "phpunit/phpunit": "~9|~10",
         "rector/rector": "^0.17.12",
         "swoole/ide-helper": "^5|^6",
-        "symfony/var-dumper": "^6.0"
+        "symfony/var-dumper": "^6.0",
+        "topthink/think-swoole": "^4.1"
     },
     "suggest": {
         "open-smf/connection-pool": "Connection pool support"

@@ -21,6 +21,10 @@
   <testsuites>
     <testsuite name="Application Test Suite">
       <directory>./tests/</directory>
+      <exclude>./tests/SwooleEnvTest.php</exclude>
+    </testsuite>
+    <testsuite name="swoole env">
+      <file>./tests/SwooleEnvTest.php</file>
     </testsuite>
   </testsuites>
 </phpunit>
