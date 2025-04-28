@@ -69,7 +69,6 @@ class CacheDriver extends Driver
 
         $value = $this->handler->get($this->getCacheKey($key));
 
-        /** @phpstan-ignore-next-line  暂时保持与tp驱动实现一致 */
         if (false === $value || is_null($value)) {
             return $default;
         }
@@ -102,6 +101,7 @@ class CacheDriver extends Driver
     {
         $this->writeTimes++;
 
+        /** @var int|false $result */
         $result = $this->handler->del($this->getCacheKey($key));
         return $result > 0;
     }
