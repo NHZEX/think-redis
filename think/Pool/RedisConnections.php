@@ -100,7 +100,7 @@ class RedisConnections extends PhpRedisConnection
         return Context::rememberData($this->__poolName(), function () {
             $connection = $this->pool->borrow();
 
-            $connection->{State::KEY_RELEASED} = false;
+            State::setValue(State::KEY_RELEASED, $connection, false);
 
             Coroutine::defer(function () {
                 $this->__return(true);
@@ -118,10 +118,10 @@ class RedisConnections extends PhpRedisConnection
                 if ($key !== $this->__poolName()) {
                     continue;
                 }
-                if ($connection->{State::KEY_LOCK_TRANSACTION}) {
+                if (State::getValue(State::KEY_LOCK_TRANSACTION, $connection)) {
                     if ($this->autoDiscard) {
                         $connection->discard();
-                        $connection->{State::KEY_LOCK_TRANSACTION} = false;
+                        State::setValue(State::KEY_LOCK_TRANSACTION, $connection, false);
                     } else {
                         throw new RedisPoolException(sprintf(
                             'release obj#%d warning: uncommitted transaction',
@@ -129,10 +129,10 @@ class RedisConnections extends PhpRedisConnection
                         ));
                     }
                 }
-                if ($connection->{State::KEY_LOCK_WATCH}) {
+                if (State::getValue(State::KEY_LOCK_WATCH, $connection)) {
                     if ($this->autoDiscard) {
                         $connection->unwatch();
-                        $connection->{State::KEY_LOCK_WATCH} = false;
+                        State::setValue(State::KEY_LOCK_WATCH, $connection, false);
                     } else {
                         throw new RedisPoolException(sprintf(
                             'release obj#%d warning: unreleased watch',
@@ -140,7 +140,7 @@ class RedisConnections extends PhpRedisConnection
                         ));
                     }
                 }
-                $connection->{State::KEY_RELEASED} = true;
+                State::setValue(State::KEY_RELEASED, $connection, true);
                 Context::removeData($key);
                 $this->pool->return($connection);
             }
@@ -150,13 +150,13 @@ class RedisConnections extends PhpRedisConnection
             if (empty($connection)) {
                 return;
             }
-            if ($connection->{State::KEY_RELEASED}) {
+            if (State::getValue(State::KEY_RELEASED, $connection)) {
                 return;
             }
-            if ($connection->{State::KEY_LOCK_TRANSACTION} || $connection->{State::KEY_LOCK_WATCH}) {
+            if (State::getValue(State::KEY_LOCK_TRANSACTION, $connection) || State::getValue(State::KEY_LOCK_WATCH, $connection)) {
                 return;
             }
-            $connection->{State::KEY_RELEASED} = true;
+            State::setValue(State::KEY_RELEASED, $connection, true);
             Context::removeData($this->__poolName());
             $this->pool->return($connection);
         }
@@ -171,7 +171,7 @@ class RedisConnections extends PhpRedisConnection
     protected function __invokePool(string $method, array $arguments = [], bool $fastFreed = false)
     {
         $connection = $this->__borrow();
-        if ($connection->{State::KEY_RELEASED}) {
+        if (State::getValue(State::KEY_RELEASED, $connection)) {
             throw new RuntimeException("Connection already has been released!");
         }
         try {

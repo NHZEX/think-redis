@@ -19,32 +19,60 @@ class State
     public const M_T_WATCH   = 'watch';
     public const M_T_UNWATCH = 'unwatch';
 
+    private static \WeakMap $map;
+
     public static function init(Redis $connection): void
     {
-        $connection->{self::KEY_LOCK_TRANSACTION} = false;
-        $connection->{self::KEY_LOCK_WATCH} = false;
+        if (!isset(self::$map)) {
+            self::$map = new \WeakMap();
+        }
+
+        self::$map[$connection] = $state = new \stdClass();
+        $state->{self::KEY_LOCK_TRANSACTION} = false;
+        $state->{self::KEY_LOCK_WATCH} = false;
     }
 
     public static function migrate(string $method, Redis $connection): void
     {
+        if (!isset(self::$map[$connection])) {
+            return;
+        }
+        $state = self::$map[$connection];
+
         $method = strtolower($method);
         switch ($method) {
             case self::M_T_MULTI:
-                $connection->{self::KEY_LOCK_TRANSACTION} = true;
+                $state->{self::KEY_LOCK_TRANSACTION} = true;
                 break;
             case self::M_T_DISCARD:
-                $connection->{self::KEY_LOCK_TRANSACTION} = false;
+                $state->{self::KEY_LOCK_TRANSACTION} = false;
                 break;
             case self::M_T_EXEC:
-                $connection->{self::KEY_LOCK_TRANSACTION} = false;
-                $connection->{self::KEY_LOCK_WATCH} = false;
+                $state->{self::KEY_LOCK_TRANSACTION} = false;
+                $state->{self::KEY_LOCK_WATCH} = false;
                 break;
             case self::M_T_WATCH:
-                $connection->{self::KEY_LOCK_WATCH} = true;
+                $state->{self::KEY_LOCK_WATCH} = true;
                 break;
             case self::M_T_UNWATCH:
-                $connection->{self::KEY_LOCK_WATCH} = false;
+                $state->{self::KEY_LOCK_WATCH} = false;
                 break;
         }
+    }
+
+    public static function getValue(string $method, Redis $connection): mixed
+    {
+        if (!isset(self::$map[$connection])) {
+            return null;
+        }
+        return self::$map[$connection]->{$method};
+    }
+
+    public static function setValue(string $method, Redis $connection, mixed $value): void
+    {
+        if (!isset(self::$map[$connection])) {
+            return;
+        }
+        self::$map[$connection]->{$method} = $value;
     }
 }
