@@ -93,4 +93,4 @@ jobs:
 
       - name: Run test suite (swoole)
         if: matrix.php-versions != '8.0'
-        run: ./bin/co-phpunit --testdox
+        run: php ./bin/co-phpunit --testdox
