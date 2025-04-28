@@ -18,7 +18,7 @@ use function sprintf;
 class RedisConnections extends PhpRedisConnection
 {
     /** @var bool */
-    private static $swooleExist = false;
+    private static bool|null $swooleExist = null;
 
     /** @var string */
     private $poolName;
@@ -43,13 +43,20 @@ class RedisConnections extends PhpRedisConnection
 
     public static function enableSwooleSupport(bool $enable): void
     {
+        if (self::$swooleExist === $enable) {
+            return;
+        }
+        if (null !== self::$swooleExist) {
+            throw new RuntimeException('This value can only be initialized once');
+        }
         self::$swooleExist = $enable;
     }
 
     private function __init(): void
     {
-        // self::$swooleExist = class_exists(Coroutine::class);
-        self::$swooleExist = false;
+        if (null === self::$swooleExist) {
+            self::$swooleExist = class_exists(Coroutine::class);
+        }
         $this->poolName = 'connection.' . spl_object_id($this);
     }
 
