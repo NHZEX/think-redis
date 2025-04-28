@@ -27,9 +27,10 @@ class State
             self::$map = new \WeakMap();
         }
 
-        self::$map[$connection] = $state = new \stdClass();
+        $state = new \stdClass();
         $state->{self::KEY_LOCK_TRANSACTION} = false;
         $state->{self::KEY_LOCK_WATCH} = false;
+        self::$map[$connection] = $state;
     }
 
     public static function migrate(string $method, Redis $connection): void
