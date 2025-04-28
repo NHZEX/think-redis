@@ -75,12 +75,11 @@ class RedisManagerTest extends TestCase
             $redis->set($key, $item);
         }
 
-        $limit = 100;
         $keys = [];
         $it = null;
         do {
             $keys = array_merge($keys, $redis->scan($it, sprintf('%s-*', __FUNCTION__), 2));
-        } while ($it !== 0 && $limit--);
+        } while ($it !== 0);
 
         $testData = [];
         foreach ($keys as $key) {
