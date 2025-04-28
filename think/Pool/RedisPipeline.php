@@ -8,30 +8,11 @@ use Redis;
 
 class RedisPipeline
 {
-    /**
-     * @var RedisConnections
-     */
-    private $connections;
-    /**
-     * @var Redis
-     */
-    private $redis;
-
-    /**
-     * @var Redis
-     */
-    private $chain;
-
-    public function __construct(RedisConnections $connections, Redis $redis, Redis $chain)
+    public function __construct(private RedisConnections $connections, private Redis $redis, private Redis $chain)
     {
-        $this->connections = $connections;
-        $this->redis = $redis;
-        $this->chain = $chain;
     }
 
     /**
-     * @param string $method
-     * @param array  $arguments
      * @return RedisPipeline|mixed
      */
     public function __call(string $method, array $arguments)

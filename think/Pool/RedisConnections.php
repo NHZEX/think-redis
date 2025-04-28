@@ -20,20 +20,15 @@ class RedisConnections extends PhpRedisConnection
     /** @var bool */
     private static bool|null $swooleExist = null;
 
-    /** @var string */
-    private $poolName;
+    private string $poolName;
 
-    /** @var bool */
-    private $fastFreed = false;
+    private bool $fastFreed = false;
 
-    /** @var bool */
-    private $autoDiscard = false;
+    private bool $autoDiscard = false;
 
-    /** @var ConnectionPool|null */
-    private $pool;
+    private ?ConnectionPool $pool = null;
 
-    /** @var bool */
-    private $closed = false;
+    private bool $closed = false;
 
     public function __construct(array $config)
     {
@@ -173,9 +168,6 @@ class RedisConnections extends PhpRedisConnection
     }
 
     /**
-     * @param string $method
-     * @param array  $arguments
-     * @param bool   $fastFreed
      * @return RedisPipeline
      */
     protected function __invokePool(string $method, array $arguments = [], bool $fastFreed = false)

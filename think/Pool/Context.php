@@ -11,8 +11,6 @@ class Context
 {
     /**
      * 获取协程上下文
-     * @param int $cid
-     * @return Coroutine\Context|null
      */
     public static function get(int $cid = 0): ?Coroutine\Context
     {
@@ -31,12 +29,7 @@ class Context
         return $context[static::class];
     }
 
-    /**
-     * @param string $key
-     * @param mixed  $default
-     * @return false|mixed|null
-     */
-    public static function getData(string $key, $default = null)
+    public static function getData(string $key, mixed $default = null): mixed
     {
         if (static::hasData($key)) {
             return static::getDataObject()->offsetGet($key);
@@ -49,11 +42,7 @@ class Context
         return static::getDataObject()->offsetExists($key);
     }
 
-    /**
-     * @param string $key
-     * @param mixed  $value
-     */
-    public static function setData(string $key, $value): void
+    public static function setData(string $key, mixed $value): void
     {
         static::getDataObject()->offsetSet($key, $value);
     }
@@ -66,8 +55,6 @@ class Context
     }
 
     /**
-     * @param string $key
-     * @param callable $value
      * @return mixed
      */
     public static function rememberData(string $key, callable $value)

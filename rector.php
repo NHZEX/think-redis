@@ -14,7 +14,6 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->skip([
-        __DIR__ . '/think/Pool',
         JsonThrowOnErrorRector::class,
         AddLiteralSeparatorToNumberRector::class,
     ]);
