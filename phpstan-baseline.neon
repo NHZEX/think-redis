@@ -1,7 +1,147 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Method Zxin\\\\Redis\\\\Connections\\\\PhpRedisConnection\\:\\:__call\\(\\) has parameter \\$parameters with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Connections/PhpRedisConnection.php
+
+		-
+			message: "#^Method Zxin\\\\Redis\\\\Connections\\\\PhpRedisConnection\\:\\:__command\\(\\) has parameter \\$parameters with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Connections/PhpRedisConnection.php
+
+		-
+			message: "#^Method Zxin\\\\Redis\\\\Connections\\\\PhpRedisConnection\\:\\:__connection\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Connections/PhpRedisConnection.php
+
+		-
+			message: "#^Method Zxin\\\\Redis\\\\Connections\\\\PhpRedisConnection\\:\\:__construct\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Connections/PhpRedisConnection.php
+
+		-
+			message: "#^Method Zxin\\\\Redis\\\\Connections\\\\PhpRedisConnection\\:\\:getConnectionConfig\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Connections/PhpRedisConnection.php
+
+		-
+			message: "#^Method Zxin\\\\Redis\\\\Connections\\\\PhpRedisConnection\\:\\:hScan\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Connections/PhpRedisConnection.php
+
+		-
+			message: "#^Method Zxin\\\\Redis\\\\Connections\\\\PhpRedisConnection\\:\\:sScan\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Connections/PhpRedisConnection.php
+
+		-
+			message: "#^Method Zxin\\\\Redis\\\\Connections\\\\PhpRedisConnection\\:\\:scan\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Connections/PhpRedisConnection.php
+
+		-
+			message: "#^Method Zxin\\\\Redis\\\\Connections\\\\PhpRedisConnection\\:\\:zScan\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Connections/PhpRedisConnection.php
+
+		-
+			message: "#^Property Zxin\\\\Redis\\\\Connections\\\\PhpRedisConnection\\:\\:\\$config type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Connections/PhpRedisConnection.php
+
+		-
 			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
 			count: 1
 			path: src/Lua/RedisLua.php
+
+		-
+			message: "#^Method Zxin\\\\Redis\\\\Lua\\\\RedisLua\\:\\:invoke\\(\\) has parameter \\$argv with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Lua/RedisLua.php
+
+		-
+			message: "#^Method Zxin\\\\Redis\\\\Lua\\\\RedisLua\\:\\:invoke\\(\\) has parameter \\$keys with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Lua/RedisLua.php
+
+		-
+			message: "#^Method Zxin\\\\Redis\\\\RedisExtend\\:\\:__call\\(\\) has parameter \\$arguments with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/RedisExtend.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\CacheDriver\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/CacheDriver.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\CacheDriver\\:\\:clearTag\\(\\) has parameter \\$keys with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/CacheDriver.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\CacheDriver\\:\\:getTagItems\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/CacheDriver.php
+
+		-
+			message: "#^Property Zxin\\\\Think\\\\Redis\\\\CacheDriver\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/CacheDriver.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\Pool\\\\PoolConnector\\:\\:connect\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/Pool/PoolConnector.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\Pool\\\\PoolConnector\\:\\:pullPoolConfig\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/Pool/PoolConnector.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\Pool\\\\PoolConnector\\:\\:pullPoolConfig\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/Pool/PoolConnector.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\Pool\\\\PoolConnector\\:\\:reset\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/Pool/PoolConnector.php
+
+		-
+			message: "#^Property Zxin\\\\Think\\\\Redis\\\\Pool\\\\PoolConnector\\:\\:\\$objRecord type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/Pool/PoolConnector.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\Pool\\\\RedisConnections\\:\\:__command\\(\\) has parameter \\$parameters with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/Pool/RedisConnections.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\Pool\\\\RedisConnections\\:\\:__construct\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/Pool/RedisConnections.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\Pool\\\\RedisConnections\\:\\:__invokePool\\(\\) has parameter \\$arguments with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/Pool/RedisConnections.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\Pool\\\\RedisPipeline\\:\\:__call\\(\\) has parameter \\$arguments with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/Pool/RedisPipeline.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\RedisManager\\:\\:forgetDriver\\(\\) has parameter \\$name with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/RedisManager.php
+
+		-
+			message: "#^Method Zxin\\\\Think\\\\Redis\\\\RedisManager\\:\\:getConnectionsConfig\\(\\) has parameter \\$default with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: think/RedisManager.php
 
