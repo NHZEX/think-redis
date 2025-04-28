@@ -119,6 +119,9 @@ class RedisConnections extends PhpRedisConnection
 
     public function __return(bool $all = false): void
     {
+        if (null === $this->pool) {
+            return;
+        }
         if ($all) {
             /** @var Redis $connection */
             foreach (Context::getDataObject()->getIterator() as $key => $connection) {
