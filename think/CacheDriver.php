@@ -3,6 +3,7 @@
 namespace Zxin\Think\Redis;
 
 use think\cache\Driver;
+use think\exception\InvalidCacheException;
 use Zxin\Redis\Connections\PhpRedisConnection;
 use DateInterval;
 use function array_merge;
@@ -57,23 +58,23 @@ class CacheDriver extends Driver
         return $this->handler->decrby($key, $step);
     }
 
-    public function clearTag($keys)
-    {
-        // 指定标签清除
-        $this->handler->del($keys);
-    }
-
     public function get(string $key, mixed $default = null): mixed
     {
         $this->readTimes++;
 
-        $value = $this->handler->get($this->getCacheKey($key));
+        $cKey   = $this->getCacheKey($key);
+        $value = $this->handler()->get($cKey);
 
         if (false === $value || is_null($value)) {
-            return $default;
+            return $this->getDefaultValue($key, $default);
         }
 
-        return $this->unserialize($value);
+        try {
+            return $this->unserialize($value);
+        } catch (InvalidCacheException) {
+            return $this->getDefaultValue($key, $default, true);
+
+        }
     }
 
     public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool
@@ -106,17 +107,20 @@ class CacheDriver extends Driver
         return $result > 0;
     }
 
+    public function has($key): bool
+    {
+        return (bool) $this->handler->exists($this->getCacheKey($key));
+    }
+
+    /**
+     * 清除缓存
+     */
     public function clear(): bool
     {
         $this->writeTimes++;
 
         $this->handler->flushDB();
         return true;
-    }
-
-    public function has($key): bool
-    {
-        return (bool) $this->handler->exists($this->getCacheKey($key));
     }
 
     /**
@@ -128,6 +132,24 @@ class CacheDriver extends Driver
     public function push($name, $value): void
     {
         $this->handler->sAdd($name, $value);
+    }
+
+    /**
+     * 删除缓存标签
+     */
+    public function clearTag($keys): void
+    {
+        // 指定标签清除
+        $this->handler->del($keys);
+    }
+
+    /**
+     * 追加TagSet数据
+     */
+    public function append($name, $value): void
+    {
+        $key = $this->getCacheKey($name);
+        $this->handler()->sAdd($key, $value);
     }
 
     /**
