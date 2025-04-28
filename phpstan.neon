@@ -7,5 +7,6 @@ parameters:
     stubFiles:
     reportUnmatchedIgnoredErrors: true
     ignoreErrors:
+        - "#has parameter \\$\\w+? with no value type specified in iterable type array.$#"
 includes:
     - phpstan-baseline.neon

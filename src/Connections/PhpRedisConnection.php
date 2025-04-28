@@ -21,7 +21,7 @@ class PhpRedisConnection
     private RedisExtend|Redis|null $client = null;
 
     /** @var array<string, string|int|bool|array|null> */
-    protected $config = [
+    protected array $config = [
         'host'       => '127.0.0.1',
         'port'       => 6379,
         'password'   => '',
