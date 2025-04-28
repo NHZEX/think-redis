@@ -41,9 +41,15 @@ class RedisConnections extends PhpRedisConnection
         parent::__construct($config);
     }
 
+    public static function enableSwooleSupport(bool $enable): void
+    {
+        self::$swooleExist = $enable;
+    }
+
     private function __init(): void
     {
-        self::$swooleExist = class_exists(Coroutine::class);
+        // self::$swooleExist = class_exists(Coroutine::class);
+        self::$swooleExist = false;
         $this->poolName = 'connection.' . spl_object_id($this);
     }
 
