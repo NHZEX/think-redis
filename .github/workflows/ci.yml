@@ -89,4 +89,8 @@ jobs:
         run: composer update --prefer-dist --no-progress --no-suggest --prefer-lowest
 
       - name: Run test suite
-        run: composer exec -- phpunit -v
+        run: composer exec -- phpunit --testdox
+
+      - name: Run test suite (swoole)
+        if: matrix.php-versions != '8.0'
+        run: ./bin/co-phpunit --testdox

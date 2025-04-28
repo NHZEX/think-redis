@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         php-versions:
-          - 8.0
+          - 8.1
     env:
       extensions: openssl, swoole, posix
       key: cache-v1 # can be any string, change to clear the extension cache.
@@ -79,7 +79,7 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Run test suite
-        run: composer exec -- phpunit --coverage-clover=coverage.xml -v
+        run: composer exec -- phpunit --coverage-clover=coverage.xml --testdox
 
       - name: Codecov
         uses: codecov/codecov-action@v4
