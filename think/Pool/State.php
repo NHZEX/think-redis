@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Zxin\Think\Redis\Pool;
 
 use Redis;
+use WeakMap;
+use stdClass;
 use function strtolower;
 
 class State
@@ -18,16 +20,18 @@ class State
     public const M_T_DISCARD = 'discard';
     public const M_T_WATCH   = 'watch';
     public const M_T_UNWATCH = 'unwatch';
-
-    private static \WeakMap $map;
+    /**
+     * @var WeakMap<Redis, stdClass>
+     */
+    private static WeakMap $map;
 
     public static function init(Redis $connection): void
     {
         if (!isset(self::$map)) {
-            self::$map = new \WeakMap();
+            self::$map = new WeakMap();
         }
 
-        $state = new \stdClass();
+        $state = new stdClass();
         $state->{self::KEY_LOCK_TRANSACTION} = false;
         $state->{self::KEY_LOCK_WATCH} = false;
         self::$map[$connection] = $state;
